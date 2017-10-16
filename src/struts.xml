@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+        "http://struts.apache.org/dtds/struts-2.3.dtd">
+
+<struts>
+    <constant name="struts.devMode" value="true"/>
+    <!--设置上传文件大小, 10M-->
+    <constant name="struts.multipart.maxSize" value="10485760"/>
+
+    <package name="day04" extends="struts-default">
+        <!--定义成功全局结果视图-->
+        <global-results>
+            <result name="success">success.jsp</result>
+        </global-results>
+        <action name="singUpload" class="com.lanou.action.MyUploadFieldAction" method="singleUpload">
+
+            <!--重写默认拦截器栈, 修改默认拦截器栈中的某个拦截器属性-->
+            <interceptor-ref name="defaultStack">
+                <!--重新设置上床文件的大小-->
+                <param name="fileUpload.maximumSize">10485760</param>
+                <!--重新设置上传文件的后缀, 多个用 , 隔开-->
+                <param name="fileUpload.allowedExtensions">.png,.jpg,.jpeg</param>
+            </interceptor-ref>
+
+            <result name="input">/index.jsp</result>
+        </action>
+
+        <!--多文件上传-->
+        <action name="multipleUpload" class="com.lanou.action.MultipleUploadFieldAction" method="multipleUpload">
+            <interceptor-ref name="defaultStack">
+                <param name="fileUpload.maximumSize">10485760</param>
+                <param name="fileUpload.allowedExtensions">.jpg</param>
+            </interceptor-ref>
+            <result name="input">/index.jsp</result>
+        </action>
+
+
+        <action name="download" class="com.lanou.action.MyDownloadAction" method="download">
+            <result name="error">/index.jsp</result>
+            <!--文件下载 type:stream-->
+            <result name="success" type="stream">
+                <!--动作类中输入流属性名-->
+                <param name="inputStream">inputStream</param>
+                <!--指定浏览器以何种形式下载, 以及文件名称-->
+                <param name="contentDisposition">attachment;filename=${fileName}</param>
+                <!--指定下载的文件的MIME类型-->
+                <param name="contentType">application/octet-stream</param>
+            </result>
+        </action>
+
+        <!--login-->
+        <action name="login" class="com.lanou.action.OgnlAction">
+
+        </action>
+
+    </package>
+</struts>
